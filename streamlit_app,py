@@ -12,7 +12,7 @@ st.title(f"Customize")
 
 
 # Create a database connection to Snowflake.
-conn = st.connection("snowflake")
+
 
 # Create a Snowpark session from the connection.
 # This provides a few helpers on top of a standard Python connection.
