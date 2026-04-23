@@ -1,6 +1,6 @@
 # Import python packages.
 import streamlit as st
-from snowflake.snowpark.context import get_active_session
+
 # Write directly to the app.
 from snowflake.snowpark.functions import col
 # from snowflake import pandas
@@ -19,8 +19,8 @@ conn = st.connection("snowflake")
 # If you want to use a plain Snowflake connection instead, you can create
 # one with conn.cursor().
 
-
-session = get_active_session()
+cnx = st.connection("snowflake")
+session = cnx.session()
 name_on_order = st.text_input("Name on smoothie: ")
 st.write("The name on smoothie will be",name_on_order)
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
