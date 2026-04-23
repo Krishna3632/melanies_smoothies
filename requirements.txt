@@ -1,2 +1,2 @@
 streamlit[snowflake]
-numba
+snowflake-snowpark-python
