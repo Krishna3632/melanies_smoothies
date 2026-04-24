@@ -4,16 +4,24 @@ import requests
 
 st.title("Customize Your Smoothie")
 
+# --- Snowflake connection ---
 cnx = st.connection("my_connection", type="snowflake")
 session = cnx.session()
 
+# --- User input ---
 name_on_order = st.text_input("Name on smoothie:")
 
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'), col('SEARCH_ON'))
+# --- Fetch fruit data ---
+my_dataframe = session.table("smoothies.public.fruit_options") \
+    .select(col('FRUIT_NAME'), col('SEARCH_ON'))
+
 fruit_rows = my_dataframe.collect()
+
+# Extract lists and mapping
 fruit_list = [row['FRUIT_NAME'] for row in fruit_rows]
 search_on_map = {row['FRUIT_NAME']: row['SEARCH_ON'] for row in fruit_rows}
 
+# --- Ingredient selection ---
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients:",
     fruit_list,
@@ -22,26 +30,29 @@ ingredients_list = st.multiselect(
 
 ingredients_string = " ".join(ingredients_list)
 
+# --- Fetch nutritional info ---
 if ingredients_list:
     st.subheader("Nutritional Info")
 
     for fruit in ingredients_list:
         search_value = search_on_map.get(fruit, fruit)
-        search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
-        st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
+
+        st.write(f"Search value for {fruit}: {search_value}")
+
         try:
             url = f"https://fruityvice.com/api/fruit/{search_value}"
             response = requests.get(url)
 
             if response.status_code == 200:
-                st.subheader(fruit + ' Nutritional Information')
-                st.dataframe(data=response.json(), use_container_width=True)
+                st.subheader(f"{fruit} Nutritional Information")
+                st.json(response.json())
             else:
                 st.warning(f"Could not fetch data for {fruit}")
 
         except Exception as e:
             st.error(f"API error for {fruit}: {e}")
 
+# --- Submit order ---
 time_to_insert = st.button("Submit Order")
 
 if time_to_insert:
@@ -53,6 +64,7 @@ if time_to_insert:
             INSERT INTO smoothies.public.orders (ingredients, name_on_order)
             VALUES (?, ?)
             """
+
             session.sql(
                 my_insert_stmt,
                 params=[ingredients_string, name_on_order]
