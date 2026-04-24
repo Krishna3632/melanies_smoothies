@@ -36,7 +36,8 @@ if ingredients_list:
 
             if response.status_code == 200:
                 st.write(f"**{fruit}**")
-                st.json(response.json())
+                sf_df = st.dataframe(data=response.json(),use_container_width=True)
+              
             else:
                 st.warning(f"Could not fetch data for {fruit}")
 
