@@ -27,6 +27,8 @@ if ingredients_list:
 
     for fruit in ingredients_list:
         search_value = search_on_map.get(fruit, fruit)
+        search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+        st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
         try:
             url = f"https://fruityvice.com/api/fruit/{search_value}"
             response = requests.get(url)
