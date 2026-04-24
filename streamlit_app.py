@@ -35,7 +35,7 @@ if ingredients_list:
             response = requests.get(url)
 
             if response.status_code == 200:
-                st.write(f"**{fruit}**")
+                st.subheader(fruit+ 'Nutritional Information')
                 sf_df = st.dataframe(data=response.json(),use_container_width=True)
               
             else:
