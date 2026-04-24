@@ -3,7 +3,7 @@ from snowflake.snowpark.functions import col
 
 st.title("Customize")
 
-cnx = st.connection("snowflake")
+cnx = st.connection("my_connection", type="snowflake")
 session = cnx.session()
 
 name_on_order = st.text_input("Name on smoothie:")
