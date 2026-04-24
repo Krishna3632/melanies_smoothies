@@ -1,5 +1,6 @@
 import streamlit as st
 from snowflake.snowpark.functions import col
+import requests  
 
 st.title("Customize")
 
@@ -33,3 +34,5 @@ if time_to_insert:
         """
         session.sql(my_insert_stmt, params=[ingredients_string, name_on_order]).collect()
         st.success('Your Smoothie is ordered!', icon="✅")
+smoothiefroot_response = requests.get("[https://my.smoothiefroot.com/api/fruit/watermelon](https://my.smoothiefroot.com/api/fruit/watermelon)")  
+st.text(smoothiefroot_response)
